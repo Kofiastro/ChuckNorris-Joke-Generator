@@ -1,22 +1,20 @@
 const jokeBtn = document.querySelector('#joke-btn');
 const loading = document.querySelector('#joke');
 
-function generateJoke() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://api.chucknorris.io/jokes/random');
-    xhr.onreadystatechange = function () {
-        if (this.readyState === 4) {
-            if (this.status === 200) {
-                loading.innerHTML=JSON.parse(this.responseText).value;
-            }
-            else {
-                loading.innerHTML=('You got Jokes huh!, sorry Lad');
-            }
+async function generateJoke() {
+    try {
+        const res = await fetch('https://api.chucknorris.io/jokes/random');
+        if (!res.ok) {
+            loading.innerHTML = 'Oops No jokes on you!';
         }
+        const data = await res.json();
+        loading.innerHTML=data.value;
     }
-    xhr.send();
+    catch (error) {
+        console.log(error);
+    }
 };
 
 //Add Event listeners 
 jokeBtn.addEventListener('click', generateJoke);
-document.addEventListener('DOMContentLoaded',generateJoke);
+document.addEventListener('DOMContentLoaded', generateJoke);
